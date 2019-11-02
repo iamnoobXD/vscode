@@ -48,7 +48,7 @@
     "sudo-prompt": "9.0.0",
     "v8-inspect-profiler": "^0.0.20",
     "vscode-minimist": "^1.2.1",
-    "vscode-nsfw": "1.2.7",
+    "vscode-nsfw": "1.2.8",
     "vscode-proxy-agent": "^0.5.1",
     "vscode-ripgrep": "^1.5.7",
     "vscode-sqlite3": "4.0.8",

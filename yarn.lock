@@ -8975,10 +8975,10 @@ vscode-nls-dev@^3.3.1:
     xml2js "^0.4.19"
     yargs "^13.2.4"
 
-vscode-nsfw@1.2.7:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/vscode-nsfw/-/vscode-nsfw-1.2.7.tgz#05f79217ad0b992ece5212004e9e6aa60f978cc1"
-  integrity sha512-dhO0v8kqyYv1xh5KKYM9vuZ+5l/Pg+vR3Qp4erMg8+kraEzYFvfw4clU6cmvw9AReo2SWFLPmn0RWMmVIlnwew==
+vscode-nsfw@1.2.8:
+  version "1.2.8"
+  resolved "https://registry.yarnpkg.com/vscode-nsfw/-/vscode-nsfw-1.2.8.tgz#1bf452e72ff1304934de63692870d039a2d972af"
+  integrity sha512-yRLFDk2nwV0Fp+NWJkIbeXkHYIWoTuWC2siz6JfHc21FkRUjDmuI/1rVL6B+MXW15AsSbXnH5dw4Fo9kUyYclw==
   dependencies:
     fs-extra "^7.0.0"
     lodash.isinteger "^4.0.4"
