@@ -3,17 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-/**
- * A interface that emulates the API shape of a node.js readable
- * stream for use in desktop and web environments.
- */
-export interface ReadableStream<T> {
+export interface ReadableStreamEvents<T> {
 
 	/**
 	 * The 'data' event is emitted whenever the stream is
 	 * relinquishing ownership of a chunk of data to a consumer.
 	 */
-	on(event: 'data', callback: (chunk: T) => void): void;
+	on(event: 'data', callback: (data: T) => void): void;
 
 	/**
 	 * Emitted when any error occurs.
@@ -26,6 +22,13 @@ export interface ReadableStream<T> {
 	 * not be emitted unless the data is completely consumed.
 	 */
 	on(event: 'end', callback: () => void): void;
+}
+
+/**
+ * A interface that emulates the API shape of a node.js readable
+ * stream for use in desktop and web environments.
+ */
+export interface ReadableStream<T> extends ReadableStreamEvents<T> {
 
 	/**
 	 * Stops emitting any events until resume() is called.
@@ -352,7 +355,7 @@ export function toReadable<T>(t: T): Readable<T> {
 	};
 }
 
-export function transform<S, T>(stream: ReadableStream<S>, transformer: ITransformer<S, T>, reducer: IReducer<T>): ReadableStream<T> {
+export function transform<S, T>(stream: ReadableStreamEvents<S>, transformer: ITransformer<S, T>, reducer: IReducer<T>): ReadableStream<T> {
 	const target = newWriteableStream<T>(reducer);
 
 	stream.on('data', data => target.write(transformer(data)));

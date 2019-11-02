@@ -164,7 +164,7 @@ export function bufferToStream(buffer: VSBuffer): streams.ReadableStream<VSBuffe
 	return streams.toStream<VSBuffer>(buffer, chunks => VSBuffer.concat(chunks));
 }
 
-export function streamToBufferReadableStream(stream: streams.ReadableStream<Uint8Array | string>): streams.ReadableStream<VSBuffer> {
+export function streamToBufferReadableStream(stream: streams.ReadableStreamEvents<Uint8Array | string>): streams.ReadableStream<VSBuffer> {
 	return streams.transform<Uint8Array | string, VSBuffer>(stream, data => typeof data === 'string' ? VSBuffer.fromString(data) : VSBuffer.wrap(data), chunks => VSBuffer.concat(chunks));
 }
 
