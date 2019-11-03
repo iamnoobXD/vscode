@@ -3,6 +3,11 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
+/**
+ * The payload that flows in readable stream events.
+ */
+export type ReadableStreamEventPayload<T> = T | Error | 'end';
+
 export interface ReadableStreamEvents<T> {
 
 	/**
@@ -100,8 +105,17 @@ export interface IReducer<T> {
 	(data: T[]): T;
 }
 
-export interface ITransformer<S, T> {
-	(source: S): T;
+export interface IDataTransformer<Original, Transformed> {
+	(data: Original): Transformed;
+}
+
+export interface IErrorTransformer {
+	(error: Error): Error;
+}
+
+export interface ITransformer<Original, Transformed> {
+	data: IDataTransformer<Original, Transformed>;
+	error?: IErrorTransformer;
 }
 
 export function newWriteableStream<T>(reducer: IReducer<T>) {
@@ -355,12 +369,15 @@ export function toReadable<T>(t: T): Readable<T> {
 	};
 }
 
-export function transform<S, T>(stream: ReadableStreamEvents<S>, transformer: ITransformer<S, T>, reducer: IReducer<T>): ReadableStream<T> {
-	const target = newWriteableStream<T>(reducer);
+/**
+ * Helper to transform a readable stream into another stream.
+ */
+export function transform<Original, Transformed>(stream: ReadableStreamEvents<Original>, transformer: ITransformer<Original, Transformed>, reducer: IReducer<Transformed>): ReadableStream<Transformed> {
+	const target = newWriteableStream<Transformed>(reducer);
 
-	stream.on('data', data => target.write(transformer(data)));
+	stream.on('data', data => target.write(transformer.data(data)));
 	stream.on('end', () => target.end());
-	stream.on('error', error => target.error(error));
+	stream.on('error', error => target.error(transformer.error ? transformer.error(error) : error));
 
 	return target;
 }
