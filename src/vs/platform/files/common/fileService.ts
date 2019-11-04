@@ -14,7 +14,7 @@ import { isNonEmptyArray, coalesce } from 'vs/base/common/arrays';
 import { getBaseLabel } from 'vs/base/common/labels';
 import { ILogService } from 'vs/platform/log/common/log';
 import { VSBuffer, VSBufferReadable, readableToBuffer, bufferToReadable, streamToBuffer, bufferToStream, VSBufferReadableStream } from 'vs/base/common/buffer';
-import { isReadableStream, transform, ReadableStreamEvents } from 'vs/base/common/stream';
+import { isReadableStream, transform, ReadableStreamEvents, consumeReadableWithLimit, consumeStreamWithLimit } from 'vs/base/common/stream';
 import { Queue } from 'vs/base/common/async';
 import { CancellationTokenSource, CancellationToken } from 'vs/base/common/cancellation';
 import { Schemas } from 'vs/base/common/network';
@@ -311,6 +311,18 @@ export class FileService extends Disposable implements IFileService {
 			// mkdir recursively as needed
 			if (!stat) {
 				await this.mkdirp(provider, dirname(resource));
+			}
+
+			// optimization: if the provider has unbuffered write capability and the data
+			// to write is a Readable, we consume up to 3 chunks and try to write the data
+			// unbuffered to reduce the overhead. If the Readable has more data to provide
+			// we continue to write buffered.
+			if (hasReadWriteCapability(provider) && !(bufferOrReadableOrStream instanceof VSBuffer)) {
+				if (isReadableStream(bufferOrReadableOrStream)) {
+					bufferOrReadableOrStream = await consumeStreamWithLimit(bufferOrReadableOrStream, data => VSBuffer.concat(data), 3);
+				} else {
+					bufferOrReadableOrStream = consumeReadableWithLimit(bufferOrReadableOrStream, data => VSBuffer.concat(data), 3);
+				}
 			}
 
 			// write file: unbuffered (only if data to write is a buffer, or the provider has no buffered write capability)
