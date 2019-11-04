@@ -1521,6 +1521,10 @@ suite('Disk File Service', function () {
 		assert.equal(event!.target!.resource.fsPath, resource.fsPath);
 	});
 
+	test('writeFile - default', async () => {
+		return testWriteFile();
+	});
+
 	test('writeFile - buffered', async () => {
 		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
 
@@ -1544,6 +1548,10 @@ suite('Disk File Service', function () {
 
 		assert.equal(readFileSync(resource.fsPath), newContent);
 	}
+
+	test('writeFile (large file) - default', async () => {
+		return testWriteFileLarge();
+	});
 
 	test('writeFile (large file) - buffered', async () => {
 		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
@@ -1614,6 +1622,10 @@ suite('Disk File Service', function () {
 		assert.ok(['0', '00', '000', '0000', '00000'].some(offset => fileContent === offset + newContent));
 	});
 
+	test('writeFile (readable) - default', async () => {
+		return testWriteFileReadable();
+	});
+
 	test('writeFile (readable) - buffered', async () => {
 		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
 
@@ -1637,6 +1649,10 @@ suite('Disk File Service', function () {
 
 		assert.equal(readFileSync(resource.fsPath), newContent);
 	}
+
+	test('writeFile (large file - readable) - default', async () => {
+		return testWriteFileLargeReadable();
+	});
 
 	test('writeFile (large file - readable) - buffered', async () => {
 		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
@@ -1662,6 +1678,10 @@ suite('Disk File Service', function () {
 		assert.equal(readFileSync(resource.fsPath), newContent);
 	}
 
+	test('writeFile (stream) - default', async () => {
+		return testWriteFileStream();
+	});
+
 	test('writeFile (stream) - buffered', async () => {
 		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);
 
@@ -1683,6 +1703,10 @@ suite('Disk File Service', function () {
 
 		assert.equal(readFileSync(source.fsPath).toString(), readFileSync(target.fsPath).toString());
 	}
+
+	test('writeFile (large file - stream) - default', async () => {
+		return testWriteFileLargeStream();
+	});
 
 	test('writeFile (large file - stream) - buffered', async () => {
 		setCapabilities(fileProvider, FileSystemProviderCapabilities.FileOpenReadWriteClose);

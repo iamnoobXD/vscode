@@ -103,12 +103,15 @@ suite('Stream', () => {
 	function readableToStream(readable: Readable<string>): ReadableStream<string> {
 		const stream = newWriteableStream<string>(strings => strings.join());
 
-		let chunk: string | null = null;
-		while ((chunk = readable.read()) !== null) {
-			stream.write(chunk);
-		}
+		// Simulate async behavior
+		setTimeout(() => {
+			let chunk: string | null = null;
+			while ((chunk = readable.read()) !== null) {
+				stream.write(chunk);
+			}
 
-		stream.end();
+			stream.end();
+		}, 0);
 
 		return stream;
 	}
@@ -158,11 +161,14 @@ suite('Stream', () => {
 
 		const result = transform(source, { data: string => string + string }, strings => strings.join());
 
-		source.write('1');
-		source.write('2');
-		source.write('3');
-		source.write('4');
-		source.end('5');
+		// Simulate async behavior
+		setTimeout(() => {
+			source.write('1');
+			source.write('2');
+			source.write('3');
+			source.write('4');
+			source.end('5');
+		}, 0);
 
 		const consumed = await consumeStream(result, strings => strings.join());
 		assert.equal(consumed, '11,22,33,44,55');
